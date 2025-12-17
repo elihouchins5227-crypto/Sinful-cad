@@ -1,8 +1,16 @@
-// --- Global state ---
-let calls = [];     // 911 calls
-let units = [];     // Units list
-let bolos = [];     // BOLOs
-let reports = [];   // Reports
+// --- Load data from localStorage or initialize ---
+let calls = JSON.parse(localStorage.getItem('calls')) || [];
+let units = JSON.parse(localStorage.getItem('units')) || [];
+let bolos = JSON.parse(localStorage.getItem('bolos')) || [];
+let reports = JSON.parse(localStorage.getItem('reports')) || [];
+
+// --- Save all data to localStorage ---
+function saveData() {
+  localStorage.setItem('calls', JSON.stringify(calls));
+  localStorage.setItem('units', JSON.stringify(units));
+  localStorage.setItem('bolos', JSON.stringify(bolos));
+  localStorage.setItem('reports', JSON.stringify(reports));
+}
 
 // --- Tab switching ---
 function showTab(tab) {
@@ -45,7 +53,8 @@ function showTab(tab) {
         const type = document.getElementById('type').value;
         const info = document.getElementById('info').value.trim();
         if(!caller || !info) return alert('Fill all fields.');
-        calls.push({caller, type, info});
+        calls.push({caller,type,info});
+        saveData();
         this.reset();
         showTab('calls');
       });
@@ -74,6 +83,7 @@ function showTab(tab) {
         const status = document.getElementById('unitStatus').value;
         if(!name) return alert('Enter unit name.');
         units.push({name,status});
+        saveData();
         this.reset();
         showTab('units');
       });
@@ -97,7 +107,8 @@ function showTab(tab) {
         const name = document.getElementById('boloName').value.trim();
         const info = document.getElementById('boloInfo').value.trim();
         if(!name || !info) return alert('Fill all fields.');
-        bolos.push({name, info});
+        bolos.push({name,info});
+        saveData();
         this.reset();
         showTab('bolos');
       });
@@ -121,7 +132,8 @@ function showTab(tab) {
         const reporter = document.getElementById('reporter').value.trim();
         const info = document.getElementById('reportInfo').value.trim();
         if(!reporter || !info) return alert('Fill all fields.');
-        reports.push({reporter, info});
+        reports.push({reporter,info});
+        saveData();
         this.reset();
         showTab('reports');
       });
