@@ -1,181 +1,176 @@
-// --- LOGIN SYSTEM ---
+/***************
+ AUTH
+****************/
 const ADMIN_KEY = "sinfuladmin24";
 let session = JSON.parse(localStorage.getItem("session")) || null;
 
-function login() {
-  const username = document.getElementById("username").value.trim();
-  const role = document.getElementById("role").value;
-  const key = document.getElementById("adminkey").value;
-
-  if (!username) return alert("Enter username");
-  if (role === "admin" && key !== ADMIN_KEY) return alert("Invalid admin key");
-
-  session = { username, role };
-  localStorage.setItem("session", JSON.stringify(session));
+function login(){
+  const u = username.value.trim();
+  const r = role.value;
+  const k = adminkey.value;
+  if(!u) return alert("Username required");
+  if(r==="admin" && k!==ADMIN_KEY) return alert("Invalid admin key");
+  session={u,r};
+  localStorage.setItem("session",JSON.stringify(session));
   boot();
 }
 
-function logout() {
-  localStorage.removeItem("session");
+function logout(){
+  localStorage.clear();
   location.reload();
 }
 
-function boot() {
-  if (!session) return;
-  document.getElementById("login").style.display = "none";
-  document.getElementById("cad").style.display = "block";
+function boot(){
+  if(!session) return;
+  login.style.display="none";
+  cad.style.display="block";
   showTab("dashboard");
 }
 
-// --- DATA STORAGE ---
-let calls = JSON.parse(localStorage.getItem('calls')) || [];
-let units = JSON.parse(localStorage.getItem('units')) || [];
-let bolos = JSON.parse(localStorage.getItem('bolos')) || [];
-let reports = JSON.parse(localStorage.getItem('reports')) || [];
-let civilians = JSON.parse(localStorage.getItem('civilians')) || [];
-let businesses = JSON.parse(localStorage.getItem('businesses')) || [];
-let economy = JSON.parse(localStorage.getItem('economy')) || [];
+document.addEventListener("DOMContentLoaded",boot);
 
-function saveData() {
-  localStorage.setItem('calls', JSON.stringify(calls));
-  localStorage.setItem('units', JSON.stringify(units));
-  localStorage.setItem('bolos', JSON.stringify(bolos));
-  localStorage.setItem('reports', JSON.stringify(reports));
-  localStorage.setItem('civilians', JSON.stringify(civilians));
-  localStorage.setItem('businesses', JSON.stringify(businesses));
-  localStorage.setItem('economy', JSON.stringify(economy));
-}
+/***************
+ DATA STORE
+****************/
+const db = JSON.parse(localStorage.getItem("db")) || {
+  civilians:[],
+  businesses:[],
+  transactions:[],
+  court:[],
+  crimes:[],
+  taxes:{
+    income:0.15,
+    business:0.20
+  },
+  government:{balance:0}
+};
 
-// --- TAB SYSTEM ---
-function showTab(tab) {
-  const content = document.getElementById('content');
-  const role = session.role;
+function save(){ localStorage.setItem("db",JSON.stringify(db)); }
+function now(){ return new Date().toLocaleString(); }
 
-  switch(tab) {
-    case 'dashboard':
-      content.innerHTML = `
-        <h2>Dashboard</h2>
-        <ul>
-          <li>Total 911 Calls: ${calls.length}</li>
-          <li>Total Units: ${units.length}</li>
-          <li>Total BOLOs: ${bolos.length}</li>
-          <li>Total Reports: ${reports.length}</li>
-          <li>Total Civilians: ${civilians.length}</li>
-          <li>Total Businesses: ${businesses.length}</li>
-        </ul>
-      `;
-      break;
+/***************
+ TABS
+****************/
+function showTab(tab){
+  const c = document.getElementById("content");
+  const r = session.r;
 
-    case 'calls':
-      content.innerHTML = `
-        <h2>911 Calls</h2>
-        <form id="callForm">
-          <input type="text" id="caller" placeholder="Your Name" required />
-          <select id="type">
-            <option value="civ">Civilian</option>
-            <option value="leo">LEO/Dispatch</option>
-          </select>
-          <textarea id="info" placeholder="Enter call information" required></textarea>
-          <button type="submit">Submit Call</button>
-        </form>
-        <div id="callList">
-          ${calls.map((c,i)=>`<p>${i+1}. [${c.type.toUpperCase()}] ${c.caller}: ${c.info}</p>`).join('')}
-        </div>
-      `;
-      document.getElementById('callForm').addEventListener('submit', function(e){
-        e.preventDefault();
-        const caller = document.getElementById('caller').value.trim();
-        const type = document.getElementById('type').value;
-        const info = document.getElementById('info').value.trim();
-        if(!caller || !info) return alert("Fill all fields");
-        calls.push({caller,type,info});
-        saveData();
-        this.reset();
-        showTab('calls');
-      });
-      break;
-
-    case 'civilian':
-      if(!["civ","leo","doj","admin"].includes(role)) return alert("Access denied");
-      content.innerHTML = `
-        <h2>Civilian Profiles</h2>
-        <form id="civForm">
-          <input type="text" id="civName" placeholder="Full Name" required />
-          <input type="date" id="civDOB" required />
-          <input type="text" id="civPhone" placeholder="Phone #" required />
-          <input type="text" id="civAddress" placeholder="Address" required />
-          <textarea id="civJobs" placeholder="Jobs (comma separated)"></textarea>
-          <textarea id="civLicenses" placeholder="Licenses (comma separated)"></textarea>
-          <input type="number" id="civCash" placeholder="Cash" />
-          <input type="number" id="civBank" placeholder="Bank" />
-          <button type="submit">Add Civilian</button>
-        </form>
-        <div id="civList">
-          ${civilians.map((c,i)=>`<p>${i+1}. ${c.name} | DOB: ${c.dob} | Phone: ${c.phone} | Address: ${c.address} | Jobs: ${c.jobs.join(", ")} | Licenses: ${c.licenses.join(", ")} | Cash: $${c.cash} | Bank: $${c.bank}</p>`).join('')}
-        </div>
-      `;
-      document.getElementById('civForm').addEventListener('submit', function(e){
-        e.preventDefault();
-        const name = document.getElementById('civName').value.trim();
-        const dob = document.getElementById('civDOB').value;
-        const phone = document.getElementById('civPhone').value.trim();
-        const address = document.getElementById('civAddress').value.trim();
-        const jobs = document.getElementById('civJobs').value.split(",").map(j=>j.trim()).filter(Boolean);
-        const licenses = document.getElementById('civLicenses').value.split(",").map(l=>l.trim()).filter(Boolean);
-        const cash = parseInt(document.getElementById('civCash').value) || 0;
-        const bank = parseInt(document.getElementById('civBank').value) || 0;
-        civilians.push({name,dob,phone,address,jobs,licenses,cash,bank,criminalHistory:[],courtHistory:[],assets:{vehicles:[],businesses:[]}});
-        saveData();
-        this.reset();
-        showTab('civilian');
-      });
-      break;
-
-    case 'economy':
-      if(!["leo","doj","admin"].includes(role)) return alert("Access denied");
-      content.innerHTML = `
-        <h2>Economy</h2>
-        <p>Total Cash: $${civilians.reduce((a,c)=>a+c.cash,0)}</p>
-        <p>Total Bank: $${civilians.reduce((a,c)=>a+c.bank,0)}</p>
-        <p>Business Revenue: $${businesses.reduce((a,b)=>a+b.revenue,0)}</p>
-      `;
-      break;
-
-    case 'businesses':
-      if(!["leo","doj","admin"].includes(role)) return alert("Access denied");
-      content.innerHTML = `
-        <h2>Businesses</h2>
-        <form id="bizForm">
-          <input type="text" id="bizName" placeholder="Business Name" required />
-          <input type="text" id="bizOwner" placeholder="Owner Name" required />
-          <button type="submit">Add Business</button>
-        </form>
-        <div id="bizList">
-          ${businesses.map((b,i)=>`<p>${i+1}. ${b.name} | Owner: ${b.owner} | Revenue: $${b.revenue || 0}</p>`).join('')}
-        </div>
-      `;
-      document.getElementById('bizForm').addEventListener('submit', function(e){
-        e.preventDefault();
-        const name = document.getElementById('bizName').value.trim();
-        const owner = document.getElementById('bizOwner').value.trim();
-        businesses.push({name,owner,revenue:0,employees:[]});
-        saveData();
-        this.reset();
-        showTab('businesses');
-      });
-      break;
-
-    case 'doj':
-      if(!["doj","admin"].includes(role)) return alert("Access denied");
-      content.innerHTML = `
-        <h2>DOJ</h2>
-        <p>View and manage court cases, warrants, asset forfeitures (placeholder)</p>
-      `;
-      break;
-
-    default:
-      content.innerHTML = "<p>Tab not found</p>";
+  /* DASHBOARD */
+  if(tab==="dashboard"){
+    c.innerHTML=`
+      <h2>Dashboard</h2>
+      <p>Civilians: ${db.civilians.length}</p>
+      <p>Businesses: ${db.businesses.length}</p>
+      <p>Crimes: ${db.crimes.length}</p>
+      <p>Government Balance: $${db.government.balance}</p>
+    `;
   }
+
+  /* CIVILIANS */
+  if(tab==="civilian"){
+    c.innerHTML=`
+      <h2>Civilian Profiles</h2>
+      <form onsubmit="addCiv(event)">
+        <input placeholder="Name" id="cn">
+        <input placeholder="DOB">
+        <input placeholder="Phone">
+        <input placeholder="Address">
+        <input placeholder="Cash">
+        <input placeholder="Bank">
+        <button>Add</button>
+      </form>
+      ${db.civilians.map(c=>`
+        <p>${c.name} | Cash:$${c.cash} Bank:$${c.bank}</p>
+      `).join("")}
+    `;
+  }
+
+  /* JOBS */
+  if(tab==="jobs"){
+    c.innerHTML=`
+      <h2>Jobs</h2>
+      <p>Legal & whitelisted jobs tracked per civilian</p>
+      ${db.civilians.map(c=>`
+        <p>${c.name} | Jobs: ${c.jobs.join(", ")}</p>
+      `).join("")}
+    `;
+  }
+
+  /* ECONOMY */
+  if(tab==="economy"){
+    c.innerHTML=`
+      <h2>Economy</h2>
+      ${db.transactions.map(t=>`
+        <p>${t.time} | ${t.desc} | $${t.amount}</p>
+      `).join("")}
+    `;
+  }
+
+  /* BUSINESSES */
+  if(tab==="businesses"){
+    c.innerHTML=`
+      <h2>Businesses</h2>
+      <form onsubmit="addBiz(event)">
+        <input placeholder="Name">
+        <input placeholder="Owner">
+        <button>Add</button>
+      </form>
+      ${db.businesses.map(b=>`
+        <p>${b.name} | Owner:${b.owner} | $${b.balance}</p>
+      `).join("")}
+    `;
+  }
+
+  /* CRIME */
+  if(tab==="crime"){
+    c.innerHTML=`
+      <h2>Crime</h2>
+      ${db.crimes.map(c=>`
+        <p>${c.name} | Heat:${c.heat} | Dirty:$${c.dirty}</p>
+      `).join("")}
+    `;
+  }
+
+  /* DOJ */
+  if(tab==="doj"){
+    if(!["doj","admin"].includes(r)) return alert("Access denied");
+    c.innerHTML=`
+      <h2>DOJ</h2>
+      ${db.court.map(c=>`
+        <p>${c.name} | Fine:$${c.fine} | Seized:$${c.seized}</p>
+      `).join("")}
+    `;
+  }
+
+  save();
 }
 
-document.addEventListener('DOMContentLoaded', boot);
+/***************
+ FUNCTIONS
+****************/
+function addCiv(e){
+  e.preventDefault();
+  const f=e.target;
+  db.civilians.push({
+    name:f[0].value,
+    cash:+f[4].value||0,
+    bank:+f[5].value||0,
+    jobs:[],
+    licenses:[],
+    criminal:[],
+    assets:[]
+  });
+  save(); showTab("civilian");
+}
+
+function addBiz(e){
+  e.preventDefault();
+  const f=e.target;
+  db.businesses.push({
+    name:f[0].value,
+    owner:f[1].value,
+    balance:0,
+    employees:[]
+  });
+  save(); showTab("businesses");
+}
