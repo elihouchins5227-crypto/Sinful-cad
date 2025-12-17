@@ -1,33 +1,35 @@
-require('dotenv').config()
-const express = require('express')
-const mysql = require('mysql2')
-const cors = require('cors')
+const express = require('express');
+const path = require('path');
+const cors = require('cors');
+require('dotenv').config();
 
-const app = express()
-app.use(cors())
-app.use(express.json())
-app.use(express.static('public'))
+const app = express();
+app.use(cors());
+app.use(express.json());
 
-const db = mysql.createPool({
-  host: process.env.DB_HOST,
-  user: process.env.DB_USER,
-  password: process.env.DB_PASS,
-  database: process.env.DB_NAME
-})
+// Serve static files from 'public' folder
+app.use(express.static(path.join(__dirname, 'public')));
 
-app.get('/api/calls', (req,res)=>{
-  db.query('SELECT * FROM cad_calls ORDER BY id DESC',(e,r)=>{
-    if(e) return res.status(500).send(e)
-    res.json(r)
-  })
-})
+// Route for root path
+app.get('/', (req, res) => {
+  res.sendFile(path.join(__dirname, 'public', 'index.html'));
+});
 
-app.post('/api/911',(req,res)=>{
-  db.query(
-    'INSERT INTO cad_calls (info) VALUES (?)',
-    [req.body.info]
-  )
-  res.sendStatus(200)
-})
+// Example API endpoint
+app.get('/api/health', (req, res) => res.send('OK'));
 
-app.listen(process.env.PORT || 3000)
+// 911 calls API
+app.get('/api/calls', (req, res) => {
+  // You can connect this to your DB later
+  res.json([{ info: 'Test call' }]);
+});
+
+app.post('/api/911', (req, res) => {
+  const { info } = req.body;
+  console.log('Received 911:', info);
+  res.sendStatus(200);
+});
+
+// Start server
+const PORT = process.env.PORT || 3000;
+app.listen(PORT, () => console.log(`Fusion CAD running on port ${PORT}`));
