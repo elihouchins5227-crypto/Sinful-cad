@@ -8,22 +8,39 @@
 </head>
 <body>
 
-  <div id="cad">
-    <header>Sinful RP </header>
+<!-- LOGIN PAGE -->
+<div id="login">
+  <h1>Sinful CAD</h1>
 
-    <nav>
-      <button onclick="showTab('dashboard')">Dashboard</button>
-      <button onclick="showTab('calls')">911 Calls</button>
-      <button onclick="showTab('units')">Units</button>
-      <button onclick="showTab('bolos')">BOLOs</button>
-      <button onclick="showTab('reports')">Reports</button>
-    </nav>
+  <input id="username" placeholder="Username" />
+  <select id="role">
+    <option value="civ">Civilian</option>
+    <option value="leo">LEO</option>
+    <option value="doj">DOJ</option>
+    <option value="admin">Admin</option>
+  </select>
+  <input id="adminkey" placeholder="Admin Key (admin only)" type="password" />
 
-    <main id="content">
-      <!-- Content loads here -->
-    </main>
-  </div>
+  <button onclick="login()">Login</button>
+</div>
 
-  <script src="app.js"></script>
+<!-- MAIN CAD -->
+<div id="cad" style="display:none;">
+  <header>🚓 Sinful CAD</header>
+
+  <nav>
+    <button onclick="showTab('dashboard')">Dashboard</button>
+    <button onclick="showTab('calls')">911</button>
+    <button onclick="showTab('civilian')">Civilian</button>
+    <button onclick="showTab('economy')">Economy</button>
+    <button onclick="showTab('businesses')">Businesses</button>
+    <button onclick="showTab('doj')">DOJ</button>
+    <button onclick="logout()">Logout</button>
+  </nav>
+
+  <main id="content"></main>
+</div>
+
+<script src="app.js"></script>
 </body>
 </html>
