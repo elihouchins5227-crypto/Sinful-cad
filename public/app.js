@@ -1,39 +1,21 @@
-const content = document.getElementById('content');
+<!DOCTYPE html>
+<html>
+<head>
+  <title>RP CAD Login</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <div class="login-box">
+    <h2>RP CAD / MDT</h2>
+    <input id="user" placeholder="Badge / Username">
+    <button onclick="login()">Login</button>
+  </div>
 
-// Function to show different tabs
-function showTab(tab) {
-    if (tab === 'dashboard') {
-        content.innerHTML = '<h2>Dashboard</h2><p>Welcome to Fusion CAD Web</p>';
-    }
-
-    if (tab === 'calls') {
-        fetch('/api/calls')
-            .then(r => r.json())
-            .then(d => {
-                if (d.length === 0) {
-                    content.innerHTML = '<h2>911 Calls</h2><p>No active calls.</p>';
-                    return;
-                }
-                content.innerHTML = '<h2>911 Calls</h2>' +
-                    d.map(c => `<div class="call-entry">📞 ${c.info}</div>`).join('');
-            })
-            .catch(() => {
-                content.innerHTML = '<p>Cannot connect to server.</p>';
-            });
-    }
-
-    if (tab === 'bolos') {
-        content.innerHTML = '<h2>BOLOs</h2><p>Coming soon...</p>';
-    }
-
-    if (tab === 'units') {
-        content.innerHTML = '<h2>Units</h2><p>Live units will appear here.</p>';
-    }
-
-    if (tab === 'reports') {
-        content.innerHTML = '<h2>Reports</h2><p>Report system coming soon.</p>';
-    }
+<script>
+function login() {
+  localStorage.setItem("officer", document.getElementById("user").value);
+  window.location.href = "dashboard.html";
 }
-
-// Default tab on load
-showTab('dashboard');
+</script>
+</body>
+</html>
