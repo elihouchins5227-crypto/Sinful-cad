@@ -1,4 +1,5 @@
-name": "fusion-cad",
+{
+  "name": "fusion-cad",
   "version": "1.0.0",
   "main": "server.js",
   "scripts": {
@@ -10,3 +11,4 @@ name": "fusion-cad",
     "cors": "^2.8.5",
     "dotenv": "^16.3.1"
   }
+}}
