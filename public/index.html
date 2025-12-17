@@ -1,19 +1,29 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-<meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Fusion CAD</title>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Sinful</title>
+  <link rel="stylesheet" href="style.css" />
 </head>
 <body>
-<h1>Fusion CAD</h1>
-<div id="calls"></div>
-<script>
-fetch('/api/calls')
-.then(r=>r.json())
-.then(d=>{
-  document.getElementById('calls').innerHTML =
-    d.map(c=>`<p>📞 ${c.info}</p>`).join('')
-})
-</script>
+
+  <div id="cad">
+    <header>🚓 Sinful</header>
+
+    <nav>
+      <button onclick="showTab('dashboard')">Dashboard</button>
+      <button onclick="showTab('calls')">911 Calls</button>
+      <button onclick="showTab('units')">Units</button>
+      <button onclick="showTab('bolos')">BOLOs</button>
+      <button onclick="showTab('reports')">Reports</button>
+    </nav>
+
+    <main id="content">
+      <!-- Content loads here -->
+    </main>
+  </div>
+
+  <script src="app.js"></script>
 </body>
 </html>
