@@ -1,0 +1,63 @@
+/* General reset and body style */
+body {
+    margin: 0;
+    font-family: Arial, sans-serif;
+    background-color: #020617;
+    color: white;
+}
+
+/* Container for CAD */
+#cad {
+    max-width: 1200px;
+    margin: auto;
+    padding: 10px;
+}
+
+/* Header */
+header {
+    font-size: 24px;
+    text-align: center;
+    padding: 10px;
+    background-color: #101426;
+    border-radius: 6px;
+    margin-bottom: 10px;
+}
+
+/* Navigation buttons */
+nav {
+    display: flex;
+    gap: 6px;
+    flex-wrap: wrap;
+    margin-bottom: 10px;
+}
+
+nav button {
+    flex: 1;
+    min-width: 120px;
+    padding: 10px;
+    background-color: #2563eb;
+    border: none;
+    color: white;
+    border-radius: 6px;
+    cursor: pointer;
+    font-weight: bold;
+    transition: 0.2s;
+}
+
+nav button:hover {
+    background-color: #1d4ed8;
+}
+
+/* Main content area */
+main {
+    background-color: #0b1220;
+    padding: 15px;
+    border-radius: 8px;
+    min-height: 300px;
+}
+
+/* For 911 call entries */
+.call-entry {
+    padding: 8px;
+    border-bottom: 1px solid #333;
+}
