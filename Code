@@ -1,0 +1,47 @@
+# Fusion CAD – Full RP Economy
+
+## Requirements
+- FiveM Server
+- oxmysql
+- MySQL Database
+- Node.js (18+)
+- Railway (free hosting)
+
+---
+
+## Database Tables
+
+```sql
+CREATE TABLE civilians (
+  id INT AUTO_INCREMENT PRIMARY KEY,
+  name VARCHAR(50),
+  dob VARCHAR(20),
+  phone VARCHAR(20)
+);
+
+CREATE TABLE civ_accounts (
+  citizen_id INT,
+  cash INT DEFAULT 0,
+  bank INT DEFAULT 0
+);
+
+CREATE TABLE civ_jobs (
+  citizen_id INT,
+  job VARCHAR(30),
+  salary INT,
+  clocked_in BOOLEAN
+);
+
+CREATE TABLE civ_transactions (
+  citizen_id INT,
+  type VARCHAR(20),
+  amount INT,
+  reason TEXT,
+  timestamp TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+
+CREATE TABLE cad_calls (
+  id INT AUTO_INCREMENT PRIMARY KEY,
+  info TEXT,
+  timestamp TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
