@@ -1,0 +1,19 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Fusion CAD</title>
+</head>
+<body>
+<h1>Fusion CAD</h1>
+<div id="calls"></div>
+<script>
+fetch('/api/calls')
+.then(r=>r.json())
+.then(d=>{
+  document.getElementById('calls').innerHTML =
+    d.map(c=>`<p>📞 ${c.info}</p>`).join('')
+})
+</script>
+</body>
+</html>
