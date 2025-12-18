@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html>
+<head><title>Login</title></head>
+<body>
+<h1>Sinful CAD Login</h1>
+
+<input id="user" placeholder="Username">
+<input id="pass" type="password" placeholder="Password">
+<button onclick="login()">Login</button>
+
+<p>or</p>
+
+<input id="nuser" placeholder="New Username">
+<input id="npass" placeholder="New Password" type="password">
+<select id="role">
+<option value="civ">Civilian</option>
+<option value="leo">LEO</option>
+<option value="fire">Fire</option>
+<option value="ems">EMS</option>
+<option value="admin">Admin</option>
+</select>
+
+<input id="akey" placeholder="Admin Key (if admin)">
+<button onclick="register()">Create Account</button>
+
+<script>
+async function login(){
+  let res = await fetch("/login",{
+    method:"POST",
+    headers:{ "Content-Type":"application/json" },
+    body:JSON.stringify({
+      username:user.value,
+      password:pass.value
+    })
+  });
+
+  let d = await res.json();
+  if(d.success){
+    location="index.html";
+  }
+}
+
+async function register(){
+  let res = await fetch("/register",{
+    method:"POST",
+    headers:{ "Content-Type":"application/json" },
+    body:JSON.stringify({
+      username:nuser.value,
+      password:npass.value,
+      role:role.value,
+      key:akey.value
+    })
+  });
+
+  let d = await res.json();
+  if(d.success){
+    alert("Account created!");
+  }
+}
+</script>
+
+</body>
+</html>
